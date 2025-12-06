@@ -1,0 +1,150 @@
+name: CI run
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  haskell:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+  
+    steps:
+    - uses: actions/checkout@v4
+  
+    - name: update packages
+      run: sudo apt update
+  
+    - name: Setup Haskell
+      uses: haskell-actions/setup@v2
+      with:
+        ghc-version: 'latest'
+        cabal-version: 'latest'
+
+    - name: install deps
+      run: |
+          cabal update
+          cabal install --lib process hspec split
+
+    - name: Testbench Haskell
+      run: |
+        set -euo pipefail
+        declare -A days
+        days["2021"]="day1 day3"
+        days["2022"]="day1 day2 day3 day4 day6 day7 day8"
+  
+        for year in "${!days[@]}"; do
+          for day in ${days[$year]}; do
+            echo "::group::Running ${year}/${day}"
+            ghc ./haskell/${year}/${day}/lib.hs -o lib
+            time ./lib test_inputs/${year}/${day}.txt
+            echo "::endgroup::"
+          done
+        done
+    - name: Testbench Haskell 2022 day 9
+      run: |
+        echo "::group::Running 2022/day9"
+        ghc ./haskell/2022/day9/lib.hs -o lib
+        time ./lib test_inputs/2022/day91.txt
+        echo "::endgroup::"
+
+  python:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+  
+    steps:
+    - uses: actions/checkout@v4
+  
+    - name: update packages
+      run: sudo apt update
+  
+    - name: Testbench Python
+      run: |
+        set -euo pipefail
+        declare -A days
+        days["2024"]="day1"
+  
+        for year in "${!days[@]}"; do
+          for day in ${days[$year]}; do
+            echo "::group::Running ${year}/${day}"
+            time python3 ./python/${year}/${day}/lib.py test_inputs/${year}/${day}.txt
+            echo "::endgroup::"
+          done
+        done
+
+  rust:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+  
+    steps:
+    - uses: actions/checkout@v4
+  
+    - name: update packages
+      run: sudo apt update
+  
+    - name: Testbench Rust
+      run: |
+        set -euo pipefail
+        declare -A days
+        days["2022"]="day1 day2 day3 day4 day6"
+        days["2023"]="day4"
+        days["2025"]="day1 day2 day3 day4 day5 day6"
+  
+        for year in "${!days[@]}"; do
+          for day in ${days[$year]}; do
+            echo "::group::Running ${year}/${day}"
+            rustc "./rust/${year}/${day}/lib.rs" -o lib
+            time ./lib  test_inputs/${year}/${day}.txt
+            echo "::endgroup::"
+          done
+        done
+
+  tinygrad:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: update packages
+      run: sudo apt update
+
+    - name: install Tinygrad
+      run: pip install tinygrad
+
+    - name: Testbench Tinygrad
+      run: |
+        set -euo pipefail
+        declare -A days
+        days["2022"]="day1 day2"
+  
+        for year in "${!days[@]}"; do
+          for day in ${days[$year]}; do
+            echo "::group::Running ${year}/${day}"
+            time python3 ./tinygrad/${year}/${day}/lib.py test_inputs/${year}/${day}.txt
+            echo "::endgroup::"
+          done
+        done
+
+  #  verilog:
+  #    runs-on: ubuntu-latest
+  #    timeout-minutes: 30
+  #  
+  #    steps:
+  #    - uses: actions/checkout@v4
+  #  
+  #    - name: update packages
+  #      run: sudo apt update
+  #  
+  #    - name: Testbench Verilog 2022
+  #      run: |
+  #          days=("day1" "day2" "day3" "day4" "day5" "day6" "day7" "day8" "day9")
+  #          cd rust
+  #          rustc rust.rs
+  #          for day in ${days[@]}; do
+  #            ./rust 2022 $day
+  #            time ./2022/$day/rust
+  #          done
+
