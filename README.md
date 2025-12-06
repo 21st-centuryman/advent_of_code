@@ -35,8 +35,7 @@ The project will be structured the following way:
 │   ├── 2022
 │   │   ├── day1/
 │   │   ├── ...
-│   │   ├── day25/
-│   │   └── README.md <- For benchmark and time complexity info
+│   │   └── day25/
 │   ├── ...
 │   ├── README.md <- check status per year
 │   └── 2015/
