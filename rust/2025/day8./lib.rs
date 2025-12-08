@@ -76,7 +76,8 @@ fn part1(file: &str) -> i32 {
     vales[0] * vales[1] * vales[2]
 }
 
-fn main() {
-    let input = std::fs::read_to_string("./test.txt").expect("Failed to read input file");
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let input = std::fs::read_to_string(std::env::args().nth(1).ok_or("")?)?;
     assert!(part1(&input) == 40, "Part1 is not working");
+    Ok(())
 }
