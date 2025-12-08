@@ -90,7 +90,7 @@ jobs:
         declare -A days
         days["2022"]="day1 day2 day3 day4 day6"
         days["2023"]="day4"
-        days["2025"]="day1 day2 day3 day4 day5 day6 day7"
+        days["2025"]="day1 day2 day3 day4 day5 day6 day7 day8"
   
         for year in "${!days[@]}"; do
           for day in ${days[$year]}; do
