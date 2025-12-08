@@ -108,7 +108,7 @@ fn part2(file: &str) -> i32 {
             }
         }
         if connections.len() == 1 && answer.is_none() {
-            let set: HashSet<usize> = connections.iter().flatten().copied().collect();
+            let set: std::collections::HashSet<usize> = connections.iter().flatten().copied().collect();
             if (0..boxes.len()).all(|n| set.contains(&n)) {
                 answer = Some(boxes[a].0 as i32 * boxes[b].0 as i32);
                 break;
