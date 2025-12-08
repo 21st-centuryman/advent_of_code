@@ -44,17 +44,13 @@ fn part1(file: &str) -> i32 {
         } else {
             idxs.sort_unstable_by(|x, y| y.cmp(x));
             let first = *idxs.last().unwrap();
-
-            {
-                let v = &mut connections[first];
-                if !v.contains(&a) {
-                    v.push(a);
-                }
-                if !v.contains(&b) {
-                    v.push(b);
-                }
+            let v = &mut connections[first];
+            if !v.contains(&a) {
+                v.push(a);
             }
-
+            if !v.contains(&b) {
+                v.push(b);
+            }
             for &idx in &idxs[..idxs.len() - 1] {
                 let mut other = connections.swap_remove(idx);
                 for x in other.drain(..) {
@@ -65,7 +61,6 @@ fn part1(file: &str) -> i32 {
             }
         }
     }
-
     let mut vales = connections
         .iter()
         .map(|i| i.len() as i32)
@@ -76,8 +71,57 @@ fn part1(file: &str) -> i32 {
     vales[0] * vales[1] * vales[2]
 }
 
+fn part2(file: &str) -> i32 {
+    let (boxes, edges) = common_fn(file);
+
+    let mut connections: Vec<Vec<usize>> = Vec::new();
+    let mut answer: Option<i32> = None;
+    let mut i: usize = 0;
+    loop {
+        let (_, a, b) = edges[i];
+        let mut idxs: Vec<usize> = connections
+            .iter()
+            .enumerate()
+            .filter(|(_, v)| v.contains(&a) || v.contains(&b))
+            .map(|(idx, _)| idx)
+            .collect();
+
+        if idxs.is_empty() {
+            connections.push(vec![a, b]);
+        } else {
+            idxs.sort_unstable_by(|x, y| y.cmp(x));
+            let first = *idxs.last().unwrap();
+            let v = &mut connections[first];
+            if !v.contains(&a) {
+                v.push(a);
+            }
+            if !v.contains(&b) {
+                v.push(b);
+            }
+            for &idx in &idxs[1..] {
+                let mut other = connections.swap_remove(idx);
+                for x in other.drain(..) {
+                    if !connections[first].contains(&x) {
+                        connections[first].push(x);
+                    }
+                }
+            }
+        }
+        if connections.len() == 1 && answer.is_none() {
+            let set: HashSet<usize> = connections.iter().flatten().copied().collect();
+            if (0..boxes.len()).all(|n| set.contains(&n)) {
+                answer = Some(boxes[a].0 as i32 * boxes[b].0 as i32);
+                break;
+            }
+        }
+        i += 1;
+    }
+    answer.unwrap_or(0)
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let input = std::fs::read_to_string(std::env::args().nth(1).ok_or("")?)?;
     assert!(part1(&input) == 40, "Part1 is not working");
+    assert!(part2(&input) == 25272, "Part2 is not working");
     Ok(())
 }
