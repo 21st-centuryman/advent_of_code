@@ -21,8 +21,7 @@ fn part1(file: &str) -> i64 {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let input = std::fs::read_to_string("./input.txt").expect("Failed to read input file");
-    println!("{}", part1(&input));
+    let input = std::fs::read_to_string(std::env::args().nth(1).ok_or("")?)?;
     assert!(part1(&input) == 50, "Part1 is not working");
     //assert!(part2(&input) == 24, "Part2 is not working");
     Ok(())
