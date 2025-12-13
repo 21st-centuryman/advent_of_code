@@ -104,7 +104,7 @@ jobs:
     - name: Testbench Rust 2025 day 11
       run: |
         echo "::group::Running 2025/day11"
-        ghc ./rust/2025/day11/lib.hs -o lib
+        rustc "./rust/2011/day11/lib.rs" -o lib
         time ./lib test_inputs/2025/day111.txt
         time ./lib test_inputs/2025/day112.txt
         echo "::endgroup::"
