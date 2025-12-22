@@ -119,3 +119,4 @@ cython_debug/
 
 # Verilator
 obj_dir
+lib
