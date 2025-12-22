@@ -24,6 +24,6 @@ fn part2(file: &str) -> i32 {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let input = std::fs::read_to_string(std::env::args().nth(1).ok_or("")?)?;
     assert!(part1(&input) == 1, "Part1 is not working");
-    assert!(part2(&input) == 41, "Part1 is not working");
+    assert!(part2(&input) == 41, "Part2 is not working");
     Ok(())
 }
