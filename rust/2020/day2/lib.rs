@@ -1,6 +1,5 @@
 fn part1(file: &str) -> i32 {
-    file
-        .lines()
+    file.lines()
         .filter(|l| {
             let parts: Vec<_> = l.split_whitespace().collect();
             let range: Vec<_> = parts[0]
@@ -13,25 +12,22 @@ fn part1(file: &str) -> i32 {
             let count = parts[2].chars().filter(|&c| c == wanted).count() as i32;
 
             count >= low && count <= high
-
         })
         .count() as i32
 }
 
 fn part2(file: &str) -> i32 {
-    file
-        .lines()
+    file.lines()
         .filter(|l| {
             let parts: Vec<_> = l.split_whitespace().collect();
             let range: Vec<_> = parts[0]
                 .split('-')
                 .map(|i| i.parse::<usize>().unwrap() - 1)
                 .collect();
-            let wanted = parts[1].chars().next().unwrap();
-            let first = parts[2].chars().nth(range[0]) == Some(wanted);
-            let second = parts[2].chars().nth(range[1]) == Some(wanted);
+                let wanted = parts[1].chars().next().unwrap();
 
-            parts[2].chars().nth(range[0]) == Some(wanted) ^ parts[2].chars().nth(range[1]) == Some(wanted)
+            (parts[2].chars().nth(range[0]) == Some(wanted))
+                ^ (parts[2].chars().nth(range[1]) == Some(wanted))
         })
         .count() as i32
 }
